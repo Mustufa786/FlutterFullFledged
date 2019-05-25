@@ -3,29 +3,36 @@ import 'package:flutter/material.dart';
 import './pages/product_details.dart';
 
 class Products extends StatelessWidget {
-  List<String> products;
+  List<Map<String, String>> products;
+  Function deleteProduct;
 
-  Products(this.products);
+  Products(this.products, {this.deleteProduct});
 
   Widget _addItemBuilder(BuildContext context, int index) {
     return Card(
         child: Column(
       children: <Widget>[
-        Image.asset('assets/food.jpg'),
-        Text(products[index]),
+        Image.asset(products[index]['image']),
+        Text(products[index]['title']),
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: <Widget>[
             FlatButton(
-                onPressed: () => Navigator.push(
+                onPressed: () =>
+                    Navigator.push<bool>(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => ProductDetails(),
+                        builder: (BuildContext context) =>
+                            ProductDetails(
+                                products[index]['title'],
+                                products[index]['image']),
                       ),
-                    ),
+                    ).then((bool value) {
+                      if (value) deleteProduct(index);
+                    }),
                 child: Text("Details"))
           ],
-        )
+        ),
       ],
     ));
   }
