@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:product_app/models/product.dart';
+import 'package:product_app/scope_model/products.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CreateProductPage extends StatefulWidget {
   Function addProduct;
@@ -26,18 +28,17 @@ class _CreateProductPageState extends State<CreateProductPage> {
   String prodName, prodDesc;
   double priceValue;
 
-  void _onSubmitForm() {
+  void _onSubmitForm(Function addProduct, Function updateProduct) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (widget.product == null) {
-      widget.addProduct(
-          Product(
-              title: _formMap['title'],
-              desc: _formMap['desc'],
-              image: _formMap['image'],
-              price: _formMap['price']));
+      addProduct(Product(
+          title: _formMap['title'],
+          desc: _formMap['desc'],
+          image: _formMap['image'],
+          price: _formMap['price']));
     } else {
       widget.updateProduct(
           widget.productIndex,
@@ -49,6 +50,17 @@ class _CreateProductPageState extends State<CreateProductPage> {
     }
 
     Navigator.pushReplacementNamed(context, '/products');
+  }
+
+  Widget _submitProductButton() {
+    return ScopedModelDescendant<ProductModel>(
+      builder: (BuildContext context, Widget child, ProductModel model) {
+        return RaisedButton(
+          onPressed: () => _onSubmitForm(model.addProduct, model.updateProduct),
+          child: Text("Save"),
+        );
+      },
+    );
   }
 
   @override
@@ -98,10 +110,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
                 _formMap['price'] = double.parse(value);
               },
             ),
-            RaisedButton(
-              onPressed: _onSubmitForm,
-              child: Text("Save"),
-            )
+            _submitProductButton(),
           ],
         ),
       ),

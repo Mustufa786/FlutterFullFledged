@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:product_app/models/product.dart';
-import '../product_manager.dart';
+import '../products.dart';
 import './products_admin.dart';
 
 class HomePage extends StatelessWidget {
 
-  List<Product> _products = [];
-
-
-  HomePage(this._products);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +26,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("EasyList"),
       ),
-      body: ProductManager(_products),
+      body: Products(),
     );
   }
 }

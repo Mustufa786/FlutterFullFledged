@@ -1,85 +1,20 @@
 import 'package:flutter/material.dart';
-
+import 'package:product_app/scope_model/products.dart';
+import 'package:product_app/widgets/product_card.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'models/product.dart';
 
 class Products extends StatelessWidget {
-  List<Product> products;
-
-  Products(this.products);
-
-  Widget _addItemBuilder(BuildContext context, int index) {
-    return Card(
-        child: Column(
-      children: <Widget>[
-        Image.asset(products[index].image),
-        Container(
-          padding: EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                products[index].title,
-                style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Oswald'),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).accentColor,
-                    borderRadius: BorderRadius.circular(5)),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                  child: Text(
-                    "\$" + products[index].price.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        DecoratedBox(
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1),
-              borderRadius: BorderRadius.circular(5)),
-          child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-              child: Text(
-                "Union Square, San Francisco",
-                style: TextStyle(fontSize: 16),
-              )),
-        ),
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              onPressed: () => Navigator.pushNamed<bool>(
-                  context, '/product/' + index.toString()),
-              icon: Icon(Icons.info),
-              color: Theme.of(context).accentColor,
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.favorite_border),
-              color: Colors.red,
-            ),
-          ],
-        ),
-      ],
-    ));
-  }
-
-  Widget _buildListItem() {
+  Widget _buildListItem(List<Product> products) {
     Widget listCard = Center(
       child: Text("No product found,Please add some"),
     );
     if (products.length > 0) {
       listCard = ListView.builder(
-          itemCount: products.length, itemBuilder: _addItemBuilder);
+        itemCount: products.length,
+        itemBuilder: (BuildContext context, int index) =>
+            ProductCard(products[index], index),
+      );
     }
 
     return listCard;
@@ -87,6 +22,9 @@ class Products extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildListItem();
+    return ScopedModelDescendant<ProductModel>(
+        builder: (BuildContext context, Widget child, ProductModel model) {
+          return _buildListItem(model.products);
+        });
   }
 }
