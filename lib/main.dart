@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:product_app/models/product.dart';
 import 'package:product_app/pages/auth.dart';
 import 'package:product_app/pages/products_admin.dart';
 import './pages/home.dart';
@@ -14,25 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<Map<String, dynamic>> products = [];
 
-  void _addProduct(Map<String, dynamic> product) {
-    setState(() {
-      products.add(product);
-    });
-  }
-
-  void _deleteProduct(int index) {
-    setState(() {
-      products.removeAt(index);
-    });
-  }
-
-  void _updateProduct(int index, Map<String, dynamic> product) {
-    setState(() {
-      products[index] = product;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +37,7 @@ class _MyAppState extends State<MyApp> {
           final int index = int.parse(pathElements[2]);
           return MaterialPageRoute<bool>(
             builder: (BuildContext context) => ProductDetails(
-                products[index]['title'], products[index]['image']),
+                products[index].title, products[index].image),
           );
         }
       },

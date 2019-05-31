@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:product_app/models/product.dart';
 import 'package:product_app/pages/create_product.dart';
 
 class ProductListPage extends StatelessWidget {
-  List<Map<String, dynamic>> products = [];
+  List<Product> products = [];
   Function updateProduct, deleteProduct;
 
   ProductListPage(this.products, this.updateProduct, this.deleteProduct);
@@ -17,7 +18,7 @@ class ProductListPage extends StatelessWidget {
               itemBuilder: (BuildContext context, index) {
                 return Dismissible(
                   direction: DismissDirection.endToStart,
-                  key: Key(products[index]['title']),
+                  key: Key(products[index].title),
                   background: Container(
                     color: Colors.red,
                   ),
@@ -27,12 +28,12 @@ class ProductListPage extends StatelessWidget {
                   child: Column(
                     children: <Widget>[
                       ListTile(
-                        title: Text(products[index]['title']),
+                        title: Text(products[index].title),
                         leading: CircleAvatar(
-                          backgroundImage: AssetImage(products[index]['image']),
+                          backgroundImage: AssetImage(products[index].image),
                         ),
                         subtitle:
-                            Text("\$" + products[index]['price'].toString()),
+                        Text("\$" + products[index].price.toString()),
                         trailing: IconButton(
                             icon: Icon(Icons.edit),
                             onPressed: () {

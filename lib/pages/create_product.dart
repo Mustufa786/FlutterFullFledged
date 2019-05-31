@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:product_app/models/product.dart';
 
 class CreateProductPage extends StatefulWidget {
   Function addProduct;
-  Map<String, dynamic> product;
+  Product product;
   Function updateProduct;
   int productIndex;
 
@@ -31,9 +32,20 @@ class _CreateProductPageState extends State<CreateProductPage> {
     }
     _formKey.currentState.save();
     if (widget.product == null) {
-      widget.addProduct(_formMap);
+      widget.addProduct(
+          Product(
+              title: _formMap['title'],
+              desc: _formMap['desc'],
+              image: _formMap['image'],
+              price: _formMap['price']));
     } else {
-      widget.updateProduct(widget.productIndex, _formMap);
+      widget.updateProduct(
+          widget.productIndex,
+          Product(
+              title: _formMap['title'],
+              desc: _formMap['desc'],
+              image: _formMap['image'],
+              price: _formMap['price']));
     }
 
     Navigator.pushReplacementNamed(context, '/products');
@@ -48,8 +60,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
         child: ListView(
           children: <Widget>[
             TextFormField(
-              initialValue:
-                  widget.product == null ? "" : widget.product['title'],
+              initialValue: widget.product == null ? "" : widget.product.title,
               decoration: InputDecoration(labelText: "Product Name"),
               validator: (String value) {
                 if (value.isEmpty) {
@@ -61,8 +72,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               },
             ),
             TextFormField(
-              initialValue:
-                  widget.product == null ? "" : widget.product['desc'],
+              initialValue: widget.product == null ? "" : widget.product.desc,
               maxLines: 4,
               decoration: InputDecoration(labelText: "Product Description"),
               validator: (String value) {
@@ -75,9 +85,8 @@ class _CreateProductPageState extends State<CreateProductPage> {
               },
             ),
             TextFormField(
-              initialValue: widget.product == null
-                  ? ""
-                  : widget.product['price'].toString(),
+              initialValue:
+              widget.product == null ? "" : widget.product.price.toString(),
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Product Price"),
               validator: (String value) {

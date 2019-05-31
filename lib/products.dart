@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'models/product.dart';
+
 class Products extends StatelessWidget {
-  List<Map<String, dynamic>> products;
+  List<Product> products;
 
   Products(this.products);
 
@@ -9,14 +11,14 @@ class Products extends StatelessWidget {
     return Card(
         child: Column(
       children: <Widget>[
-        Image.asset(products[index]['image']),
+        Image.asset(products[index].image),
         Container(
           padding: EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                products[index]['title'],
+                products[index].title,
                 style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -32,7 +34,7 @@ class Products extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                   child: Text(
-                    "\$" + products[index]['price'].toString(),
+                    "\$" + products[index].price.toString(),
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
