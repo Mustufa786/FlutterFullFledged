@@ -28,20 +28,20 @@ class _CreateProductPageState extends State<CreateProductPage> {
   String prodName, prodDesc;
   double priceValue;
 
-  void _onSubmitForm(Function addProduct, Function updateProduct) {
+  void _onSubmitForm(Function addProduct, Function updateProduct,
+      int selectedProductIndex) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    if (widget.product == null) {
+    if (selectedProductIndex == null) {
       addProduct(Product(
           title: _formMap['title'],
           desc: _formMap['desc'],
           image: _formMap['image'],
           price: _formMap['price']));
     } else {
-      widget.updateProduct(
-          widget.productIndex,
+      updateProduct(
           Product(
               title: _formMap['title'],
               desc: _formMap['desc'],
@@ -56,7 +56,9 @@ class _CreateProductPageState extends State<CreateProductPage> {
     return ScopedModelDescendant<ProductModel>(
       builder: (BuildContext context, Widget child, ProductModel model) {
         return RaisedButton(
-          onPressed: () => _onSubmitForm(model.addProduct, model.updateProduct),
+          onPressed: () =>
+              _onSubmitForm(model.addProduct, model.updateProduct,
+                  model.selectedProductIndex),
           child: Text("Save"),
         );
       },
@@ -65,14 +67,29 @@ class _CreateProductPageState extends State<CreateProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget pageContent = Container(
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, ProductModel model) {
+          final Widget pageContent = _buildContent(model.selectedProduct);
+          return model.selectedProductIndex == null
+              ? pageContent
+              : Scaffold(
+            appBar: AppBar(
+              title: Text("Edit Product"),
+            ),
+            body: pageContent,
+          );
+        });
+  }
+
+  Widget _buildContent(Product product) {
+    return Container(
       margin: EdgeInsets.all(10),
       child: Form(
         key: _formKey,
         child: ListView(
           children: <Widget>[
             TextFormField(
-              initialValue: widget.product == null ? "" : widget.product.title,
+              initialValue: product == null ? "" : product.title,
               decoration: InputDecoration(labelText: "Product Name"),
               validator: (String value) {
                 if (value.isEmpty) {
@@ -84,7 +101,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               },
             ),
             TextFormField(
-              initialValue: widget.product == null ? "" : widget.product.desc,
+              initialValue: product == null ? "" : product.desc,
               maxLines: 4,
               decoration: InputDecoration(labelText: "Product Description"),
               validator: (String value) {
@@ -97,8 +114,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
               },
             ),
             TextFormField(
-              initialValue:
-              widget.product == null ? "" : widget.product.price.toString(),
+              initialValue: product == null ? "" : product.price.toString(),
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Product Price"),
               validator: (String value) {
@@ -115,13 +131,5 @@ class _CreateProductPageState extends State<CreateProductPage> {
         ),
       ),
     );
-    return widget.product == null
-        ? pageContent
-        : Scaffold(
-            appBar: AppBar(
-              title: Text("Edit Product"),
-            ),
-            body: pageContent,
-          );
   }
 }
