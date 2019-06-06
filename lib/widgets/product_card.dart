@@ -65,8 +65,8 @@ class ProductCard extends StatelessWidget {
               icon: Icon(Icons.info),
               color: Theme.of(context).accentColor,
             ),
-            ScopedModelDescendant<MainModel>(builder:
-                (BuildContext context, Widget child, MainModel model) {
+            ScopedModelDescendant<MainModel>(
+                builder: (BuildContext context, Widget child, MainModel model) {
               return IconButton(
                 onPressed: () {
                   model.selectProduct(index);
