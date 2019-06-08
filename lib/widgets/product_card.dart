@@ -72,7 +72,7 @@ class ProductCard extends StatelessWidget {
                   model.selectProduct(index);
                   model.toggleFavoriteStatus();
                 },
-                icon: Icon(model.products[index].isFavorite
+                icon: Icon(model.allProducts[index].isFavorite
                     ? Icons.favorite
                     : Icons.favorite_border),
                 color: Colors.red,

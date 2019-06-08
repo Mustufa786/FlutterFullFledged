@@ -45,6 +45,7 @@ class _AuthPageState extends State<AuthPage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
+                    initialValue: "test@gmail.com",
                     validator: (value) {
                       if (value.isEmpty ||
                           !RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -65,6 +66,8 @@ class _AuthPageState extends State<AuthPage> {
                     height: 10,
                   ),
                   TextFormField(
+                    initialValue: "sdfsfsf",
+                    obscureText: true,
                     validator: (value) {
                       if (value.isEmpty || value.length < 7) {
                         return "Password must be 6 characters long";

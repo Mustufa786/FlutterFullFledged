@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:product_app/models/product.dart';
 import 'package:product_app/scope_model/main.dart';
-import 'package:product_app/scope_model/products.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CreateProductPage extends StatefulWidget {
@@ -30,27 +29,24 @@ class _CreateProductPageState extends State<CreateProductPage> {
   double priceValue;
 
   void _onSubmitForm(Function addProduct, Function updateProduct,
-      int selectedProductIndex) {
+      int selectedProductIndex, Function setSelectProduct) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (selectedProductIndex == null) {
-      addProduct(Product(
-          title: _formMap['title'],
-          desc: _formMap['desc'],
-          image: _formMap['image'],
-          price: _formMap['price']));
+      addProduct(_formMap['title'], _formMap['desc'], _formMap['image'],
+          _formMap['price']);
     } else {
       updateProduct(
-          Product(
-              title: _formMap['title'],
-              desc: _formMap['desc'],
-              image: _formMap['image'],
-              price: _formMap['price']));
+          _formMap['title'],
+          _formMap['desc'],
+          _formMap['image'],
+          _formMap['price']);
     }
 
-    Navigator.pushReplacementNamed(context, '/products');
+    Navigator.pushReplacementNamed(context, '/products')
+        .then((_) => setSelectProduct(null));
   }
 
   Widget _submitProductButton() {
@@ -59,7 +55,7 @@ class _CreateProductPageState extends State<CreateProductPage> {
         return RaisedButton(
           onPressed: () =>
               _onSubmitForm(model.addProduct, model.updateProduct,
-                  model.selectedProductIndex),
+                  model.selectedProductIndex, model.selectProduct),
           child: Text("Save"),
         );
       },

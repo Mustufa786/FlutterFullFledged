@@ -1,5 +1,4 @@
+import 'package:product_app/scope_model/connected_products.dart';
 import 'package:scoped_model/scoped_model.dart';
-import './user.dart';
-import './products.dart';
 
-class MainModel extends Model with ProductModel, UserModel {}
+class MainModel extends Model with ConnectedProducts, ProductModel, UserModel {}
