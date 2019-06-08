@@ -30,12 +30,11 @@ class ProductListPage extends StatelessWidget {
                               title: Text(model.allProducts[index].title),
                               leading: CircleAvatar(
                                 backgroundImage:
-                                AssetImage(model.allProducts[index].image),
+                                NetworkImage(model.allProducts[index].image),
                               ),
                               subtitle: Text(
-                                  "\$" +
-                                      model.allProducts[index].price
-                                          .toString()),
+                                  "\$" + model.allProducts[index].price
+                                      .toString()),
                               trailing: IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
