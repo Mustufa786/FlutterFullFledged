@@ -21,7 +21,7 @@ class ProductDetails extends StatelessWidget {
             body: Center(
               child: Column(
                 children: <Widget>[
-                  Image.asset(product.image),
+                  Image.network(product.image),
                   Container(
                     padding: EdgeInsets.all(10),
                     child: Text(product.title),

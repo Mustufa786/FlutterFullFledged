@@ -8,8 +8,12 @@ class ConnectedProducts extends Model {
   User _authenticatedUser;
   List<Product> _products = [];
   int _selProductIndex;
+  bool _isLoading = false;
 
-  void addProduct(String title, String desc, String image, double price) {
+  Future<Null> addProduct(String title, String desc, String image,
+      double price) {
+    _isLoading = true;
+    notifyListeners();
     final Map<String, dynamic> map = {
       'title': title,
       'desc': desc,
@@ -20,7 +24,7 @@ class ConnectedProducts extends Model {
       'userEmail': _authenticatedUser.email
     };
 
-    http
+    return http
         .post('https://flutter-product-app-e96e0.firebaseio.com/products.json',
         body: json.encode(map))
         .then((http.Response response) {
@@ -34,6 +38,7 @@ class ConnectedProducts extends Model {
           userEmail: _authenticatedUser.email,
           userId: _authenticatedUser.id);
       _products.add(newProduct);
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -55,12 +60,19 @@ class ProductModel extends ConnectedProducts {
     return List.from(_products);
   }
 
-  void fetchData() {
-    http
+  Future<Null> fetchData() {
+    _isLoading = true;
+    notifyListeners();
+    return http
         .get('https://flutter-product-app-e96e0.firebaseio.com/products.json')
         .then((http.Response response) {
       final Map<String, dynamic> productData = json.decode(response.body);
       final List<Product> fetchedProductList = [];
+      if (productData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
       productData.forEach((String id, dynamic data) {
         Product products = Product(
             title: data['title'],
@@ -73,6 +85,7 @@ class ProductModel extends ConnectedProducts {
         fetchedProductList.add(products);
       });
       _products = fetchedProductList;
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -92,7 +105,16 @@ class ProductModel extends ConnectedProducts {
   }
 
   void deleteProduct() {
+    _isLoading = true;
+    final productId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
+    _selProductIndex = null;
+    notifyListeners();
+    http.delete(
+        'https://flutter-product-app-e96e0.firebaseio.com/products/${productId}.json');
+
+    _isLoading = false;
+
     notifyListeners();
   }
 
@@ -112,16 +134,36 @@ class ProductModel extends ConnectedProducts {
     notifyListeners();
   }
 
-  void updateProduct(String title, String desc, String image, double price) {
-    Product newProduct = Product(
-        title: title,
-        desc: desc,
-        image: image,
-        price: price,
-        userEmail: selectedProduct.userEmail,
-        userId: selectedProduct.userId);
-    _products[selectedProductIndex] = newProduct;
+  Future<Null> updateProduct(String title, String desc, String image,
+      double price) {
+    _isLoading = true;
     notifyListeners();
+    Map<String, dynamic> updatedMap = {
+      'title': title,
+      'desc': desc,
+      'image': image,
+      'price': price,
+      'userEmail': selectedProduct.userEmail,
+      'userId': selectedProduct.userId
+    };
+    return http
+        .put(
+        'https://flutter-product-app-e96e0.firebaseio.com/products/${selectedProduct
+            .id}.json',
+        body: json.encode(updatedMap))
+        .then((http.Response response) {
+      _isLoading = false;
+      Product newProduct = Product(
+          id: selectedProduct.id,
+          title: title,
+          desc: desc,
+          image: image,
+          price: price,
+          userEmail: selectedProduct.userEmail,
+          userId: selectedProduct.userId);
+      _products[selectedProductIndex] = newProduct;
+      notifyListeners();
+    });
   }
 
   void selectProduct(int index) {
@@ -134,4 +176,8 @@ class UserModel extends ConnectedProducts {
   void login(String email, String password) {
     _authenticatedUser = User(email: email, password: password, id: "djf");
   }
+}
+
+class UtilityModel extends ConnectedProducts {
+  bool get isLoading => _isLoading;
 }

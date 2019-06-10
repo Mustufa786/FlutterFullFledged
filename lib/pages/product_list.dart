@@ -3,7 +3,25 @@ import 'package:product_app/pages/create_product.dart';
 import 'package:product_app/scope_model/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class ProductListPage extends StatelessWidget {
+class ProductListPage extends StatefulWidget {
+  final MainModel model;
+
+  ProductListPage(this.model);
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _ProductListPageState();
+  }
+}
+
+class _ProductListPageState extends State<ProductListPage> {
+  @override
+  void initState() {
+    widget.model.fetchData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(

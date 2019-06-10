@@ -36,27 +36,45 @@ class _CreateProductPageState extends State<CreateProductPage> {
     _formKey.currentState.save();
     if (selectedProductIndex == null) {
       addProduct(_formMap['title'], _formMap['desc'], _formMap['image'],
-          _formMap['price']);
+          _formMap['price'])
+          .then((_) {
+        Navigator.pushReplacementNamed(context, '/products')
+            .then((_) => setSelectProduct(null));
+      });
     } else {
-      updateProduct(
-          _formMap['title'],
-          _formMap['desc'],
-          _formMap['image'],
-          _formMap['price']);
+      updateProduct(_formMap['title'], _formMap['desc'], _formMap['image'],
+          _formMap['price'])
+          .then((_) {
+        Navigator.pushReplacementNamed(context, '/products')
+            .then((_) => setSelectProduct(null));
+      });
     }
-
-    Navigator.pushReplacementNamed(context, '/products')
-        .then((_) => setSelectProduct(null));
   }
 
   Widget _submitProductButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return RaisedButton(
-          onPressed: () =>
-              _onSubmitForm(model.addProduct, model.updateProduct,
-                  model.selectedProductIndex, model.selectProduct),
-          child: Text("Save"),
+        return model.isLoading
+            ? Center(
+          child: CircularProgressIndicator(),
+        )
+            : Padding(
+          padding: EdgeInsets.all(10),
+          child: RaisedButton(
+            color: Theme
+                .of(context)
+                .accentColor,
+            onPressed: () =>
+                _onSubmitForm(
+                    model.addProduct,
+                    model.updateProduct,
+                    model.selectedProductIndex,
+                    model.selectProduct),
+            child: Text(
+              "Save",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         );
       },
     );
